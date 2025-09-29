@@ -40,6 +40,7 @@ module.exports = {
         BASE_CANVA_CONNECT_API_URL: process.env.BASE_CANVA_CONNECT_API_URL || 'https://api.canva.cn/rest',
         BASE_CANVA_CONNECT_AUTH_URL: process.env.BASE_CANVA_CONNECT_AUTH_URL || 'https://www.canva.cn/api',
         CANVA_CLIENT_ID: process.env.CANVA_CLIENT_ID || 'OC-AZbW7d5jk2-P',
+        NODE_ENV: JSON.stringify('production'),
       }),
     }),
   ],
