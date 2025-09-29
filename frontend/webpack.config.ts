@@ -1,9 +1,7 @@
 import * as path from "path";
-import * as TerserPlugin from "terser-webpack-plugin";
 import type { Configuration } from "webpack";
 import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
 import { DefinePlugin } from "webpack";
-import * as cssnano from "cssnano";
 
 export function buildConfig({
   appEntry = path.join(__dirname, "src", "index.tsx"),
@@ -56,7 +54,7 @@ export function buildConfig({
               loader: "postcss-loader",
               options: {
                 postcssOptions: {
-                  plugins: [cssnano({ preset: "default" })],
+                  plugins: [],
                 },
               },
             },
@@ -98,7 +96,7 @@ export function buildConfig({
               loader: "postcss-loader",
               options: {
                 postcssOptions: {
-                  plugins: [cssnano({ preset: "default" })],
+                  plugins: [],
                 },
               },
             },
@@ -107,17 +105,7 @@ export function buildConfig({
       ],
     },
     optimization: {
-      minimizer: [
-        new TerserPlugin({
-          terserOptions: {
-            format: {
-              // Turned on because emoji and regex is not minified properly using default
-              // https://github.com/facebook/create-react-app/issues/2488
-              ascii_only: true,
-            },
-          },
-        }),
-      ],
+      minimize: true,
     },
     output: {
       filename: `bundle.js`,

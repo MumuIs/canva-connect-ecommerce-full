@@ -19,9 +19,9 @@
     "importHelpers": true,
     "noImplicitOverride": true,
     "moduleResolution": "node",
-    "rootDir": "../..",
+    "rootDir": "../",
     "outDir": "dist",
-    "noEmit": true,
+    "noEmit": false,
     "strict": true,
     "skipLibCheck": true,
     "target": "ES2019",
@@ -34,7 +34,7 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./"
   },
-  "include": ["./**/*", "../node_modules/@types/**/*", "../../common/utils"],
+  "include": ["./**/*", "../node_modules/@types/**/*", "../common/utils", "../client/ts"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
