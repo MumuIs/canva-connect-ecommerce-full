@@ -2,7 +2,7 @@
 export const getCanvaAuthorization = async (): Promise<string | undefined> => {
   try {
     const clientId = process.env.CANVA_CLIENT_ID || 'OC-AZbW7d5jk2-P';
-    const redirectUrl = window.location.origin + '/return-nav';
+    const redirectUrl = window.location.origin + '/api/oauth/redirect';
     
     // 生成 PKCE code challenge
     const codeChallenge = await generateCodeChallenge();
