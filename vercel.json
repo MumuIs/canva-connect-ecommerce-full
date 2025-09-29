@@ -5,14 +5,14 @@
   "installCommand": "npm install",
   "devCommand": "npm run dev",
   "functions": {
-    "backend/api/**/*.ts": {
+    "api/**/*.ts": {
       "runtime": "@vercel/node@4.0.0"
     }
   },
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/backend/api/$1"
+      "dest": "/api/$1"
     },
     {
       "src": "/bundle.js",
