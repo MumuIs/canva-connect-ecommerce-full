@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: canva-connect-demo
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CANVA_CLIENT_ID
+        fromDatabase:
+          name: canva-config
+          property: client_id
+      - key: CANVA_CLIENT_SECRET
+        fromDatabase:
+          name: canva-config
+          property: client_secret
+      - key: DATABASE_ENCRYPTION_KEY
+        fromDatabase:
+          name: canva-config
+          property: encryption_key

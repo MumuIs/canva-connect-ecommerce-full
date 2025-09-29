@@ -1,0 +1,9 @@
+node_modules
+dist
+.vercel
+.env
+*.log
+.DS_Store
+frontend/dist
+backend/public/exports/*
+!backend/public/exports/.gitkeep

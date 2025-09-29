@@ -1,0 +1,22 @@
+{
+  "name": "@canva/connect-api-ts",
+  "version": "0.0.0",
+  "description": "Codegen-ed Typescript client library for Canva's Connect APIs",
+  "author": "Canva Pty Ltd.",
+  "license": "SEE LICENSE IN LICENSE.md in root directory",
+  "private": true,
+  "scripts": {
+    "generate": "rm -rf ./ts && openapi-ts"
+  },
+  "dependencies": {
+    "@hey-api/client-fetch": "0.5.0"
+  },
+  "engines": {
+    "node": ">=20.14.0"
+  },
+  "engineStrict": true,
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.57.1",
+    "typescript": "5.9.2"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "ecommerce-shop-demo-backend",
+  "version": "1.0.0",
+  "description": "Backend server for the Ecommerce Shop",
+  "scripts": {
+    "lint:types": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --no-config --write",
+    "format:check": "prettier . --no-config --check --ignore-path ./.prettierignore",
+    "format:file": "prettier $1 --no-config --write",
+    "products:read": "ts-node ./scripts/products.ts read",
+    "products:reset": "ts-node ./scripts/products.ts reset"
+  },
+  "author": "Canva Pty Ltd.",
+  "license": "SEE LICENSE IN LICENSE.md in root directory",
+  "dependencies": {
+    "@canva/connect-api-ts": "file:../../../client/ts",
+    "cors": "2.8.5",
+    "dotenv": "16.6.0",
+    "express": "4.21.2",
+    "multer": "2.0.2",
+    "open": "10.2.0",
+    "pug": "3.0.3"
+  },
+  "devDependencies": {
+    "@types/cors": "2.8.19",
+    "@types/express": "4.17.21",
+    "@types/multer": "2.0.0",
+    "@types/node": "20.19.2",
+    "prettier": "3.6.2",
+    "typescript": "5.9.2"
+  }
+}
