@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Canva Connect API Demo - Full E-commerce Shop",
   "scripts": {
-    "build": "cd frontend && npm install && webpack --config webpack.config.ts --mode production && cp public/index.html dist/",
+    "build": "npm install && cd frontend && npm install && webpack --config webpack.prod.config.js && cp public/index.html dist/",
     "dev": "cd frontend && npm run dev"
   },
   "dependencies": {
