@@ -17,7 +17,8 @@ export const getProducts = async (): Promise<GetProductsResponse> => {
 };
 
 export async function fetchData<T>(endpoint: string): Promise<T> {
-  const url = new URL(endpoint, process.env.BACKEND_URL);
+  const baseUrl = process.env.BACKEND_URL || window.location.origin;
+  const url = new URL(endpoint, baseUrl);
   const response = await fetch(url, { credentials: "include" });
 
   if (response.ok) {
@@ -54,7 +55,8 @@ const postPutData = async (
   body: Record<string, any>,
   method: "POST" | "PUT" = "POST",
 ) => {
-  const url = new URL(endpoint, process.env.BACKEND_URL);
+  const baseUrl = process.env.BACKEND_URL || window.location.origin;
+  const url = new URL(endpoint, baseUrl);
 
   try {
     const response = await fetch(url, {

@@ -7,7 +7,8 @@ const endpoints = {
 export const getCanvaAuthorization = async () => {
   return new Promise<string | undefined>((resolve, reject) => {
     try {
-      const url = new URL(endpoints.AUTHORIZE, process.env.BACKEND_URL);
+      const baseUrl = process.env.BACKEND_URL || window.location.origin;
+      const url = new URL(endpoints.AUTHORIZE, baseUrl);
       const windowFeatures = ["popup", "height=800", "width=800"];
       const authWindow = window.open(url, "", windowFeatures.join(","));
 
@@ -46,7 +47,8 @@ export const getCanvaAuthorization = async () => {
 };
 
 export const revoke = async () => {
-  const url = new URL(endpoints.REVOKE, process.env.BACKEND_URL);
+  const baseUrl = process.env.BACKEND_URL || window.location.origin;
+  const url = new URL(endpoints.REVOKE, baseUrl);
   const response = await fetch(url, { credentials: "include" });
 
   if (!response.ok) {
@@ -59,7 +61,8 @@ export const revoke = async () => {
 export const checkForAccessToken = async (): Promise<{
   token?: string;
 }> => {
-  const url = new URL(endpoints.TOKEN, process.env.BACKEND_URL);
+  const baseUrl = process.env.BACKEND_URL || window.location.origin;
+  const url = new URL(endpoints.TOKEN, baseUrl);
   const response = await fetch(url, { credentials: "include" });
 
   if (!response.ok) {
