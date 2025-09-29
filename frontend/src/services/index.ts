@@ -19,10 +19,13 @@ export type Services = {
 };
 
 export function getUserClient(token?: string) {
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  
   const localClient = createClient({
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    headers,
     baseUrl: process.env.BASE_CANVA_CONNECT_API_URL,
   });
 
