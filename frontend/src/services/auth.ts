@@ -1,72 +1,103 @@
-const endpoints = {
-  AUTHORIZE: "/authorize",
-  REVOKE: "/revoke",
-  TOKEN: "/token",
+// OAuth 2.0 + PKCE 授权流程
+export const getCanvaAuthorization = async (): Promise<string | undefined> => {
+  try {
+    const clientId = process.env.CANVA_CLIENT_ID || 'OC-AZbW7d5jk2-P';
+    const redirectUrl = window.location.origin + '/return-nav';
+    
+    // 生成 PKCE code challenge
+    const codeChallenge = await generateCodeChallenge();
+    
+    // 生成随机 state
+    const state = btoa(crypto.getRandomValues(new Uint8Array(32)).toString())
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    
+    localStorage.setItem('canva_oauth_state', state);
+    
+    // 正确的 scope 列表
+    const scopes = [
+      'asset:read',
+      'asset:write',
+      'brandtemplate:content:read',
+      'brandtemplate:meta:read',
+      'design:content:read',
+      'design:content:write',
+      'design:meta:read',
+      'profile:read'
+    ];
+    
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUrl,
+      response_type: 'code',
+      scope: scopes.join(' '),
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256',
+      state: state
+    });
+    
+    const authUrl = `https://www.canva.cn/api/oauth/authorize?${params.toString()}`;
+    
+    // 跳转到认证页面
+    window.location.href = authUrl;
+    
+    return undefined; // 不会立即返回 token，需要等待回调
+  } catch (error) {
+    console.error('Error generating auth URL:', error);
+    throw error;
+  }
 };
 
-export const getCanvaAuthorization = async () => {
-  return new Promise<string | undefined>((resolve, reject) => {
-    try {
-      const baseUrl = process.env.BACKEND_URL || window.location.origin;
-      const url = new URL(endpoints.AUTHORIZE, baseUrl);
-      const windowFeatures = ["popup", "height=800", "width=800"];
-      const authWindow = window.open(url, "", windowFeatures.join(","));
+// 生成 PKCE code challenge
+const generateCodeChallenge = async (): Promise<string> => {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  const codeVerifier = btoa(String.fromCharCode.apply(null, Array.from(array)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
 
-      const checkAuth = async () => {
-        try {
-          const authorized = await checkForAccessToken();
-          resolve(authorized.token);
-        } catch (error) {
-          reject(error);
-        }
-      };
+  localStorage.setItem('canva_code_verifier', codeVerifier);
 
-      window.addEventListener("message", (event) => {
-        if (event.data === "authorization_success") {
-          checkAuth();
-          authWindow?.close();
-        } else if (event.data === "authorization_error") {
-          reject(new Error("Authorization failed"));
-          authWindow?.close();
-        }
-      });
-
-      // Some errors from authorizing may not redirect to our servers,
-      // in that case we need to check to see if the window has been manually closed by the user.
-      const checkWindowClosed = setInterval(() => {
-        if (authWindow?.closed) {
-          clearInterval(checkWindowClosed);
-          checkAuth();
-        }
-      }, 1000);
-    } catch (error) {
-      console.error("Authorization failed", error);
-      reject(error);
-    }
-  });
+  const encoder = new TextEncoder();
+  const data = encoder.encode(codeVerifier);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = new Uint8Array(hash);
+  return btoa(String.fromCharCode.apply(null, Array.from(hashArray)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
 };
 
 export const revoke = async () => {
-  const baseUrl = process.env.BACKEND_URL || window.location.origin;
-  const url = new URL(endpoints.REVOKE, baseUrl);
-  const response = await fetch(url, { credentials: "include" });
-
-  if (!response.ok) {
-    return false;
-  }
-
+  // 简化的撤销函数，清除本地存储
+  localStorage.removeItem('canva_access_token');
+  localStorage.removeItem('canva_oauth_state');
+  localStorage.removeItem('canva_code_verifier');
   return true;
 };
 
 export const checkForAccessToken = async (): Promise<{
   token?: string;
 }> => {
-  const baseUrl = process.env.BACKEND_URL || window.location.origin;
-  const url = new URL(endpoints.TOKEN, baseUrl);
-  const response = await fetch(url, { credentials: "include" });
-
-  if (!response.ok) {
-    return { token: undefined };
+  // 检查 URL 参数中是否有 access token
+  const urlParams = new URLSearchParams(window.location.search);
+  const accessToken = urlParams.get('access_token');
+  
+  if (accessToken) {
+    // 存储 token 到 localStorage
+    localStorage.setItem('canva_access_token', accessToken);
+    
+    // 清除 URL 中的 token
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.delete('access_token');
+    window.history.replaceState({}, '', newUrl.toString());
+    
+    return { token: accessToken };
   }
-  return { token: await response.text() };
+  
+  // 检查 localStorage 中的 token
+  const storedToken = localStorage.getItem('canva_access_token');
+  return { token: storedToken || undefined };
 };
